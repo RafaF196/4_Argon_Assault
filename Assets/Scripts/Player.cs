@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [Header("General")]
     [Tooltip("In ms^-1")][SerializeField] float Speed = 15f;
     [Tooltip("In m")] [SerializeField] float xRange = 5.75f;
     [Tooltip("In m")] [SerializeField] float yRange = 3f;
 
+    [Header("Screen-position Based")]
     [SerializeField] float positionPitchFactor = -5f;
-    [SerializeField] float controlPitchFactor = -15f;
-
     [SerializeField] float positionYawFactor = 5f;
-
+   
+    [Header("Control-throw Based")]
+    [SerializeField] float controlPitchFactor = -15f;
     [SerializeField] float controlRollFactor = -15f;
 
     float xThrow, yThrow;
+    bool isControlEnabled = true;
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +30,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ProcessTranslation();
-        ProcessRotation();
+        if (isControlEnabled)
+        {
+            ProcessTranslation();
+            ProcessRotation();
+        }
     }
 
     private void ProcessTranslation()
@@ -50,5 +56,10 @@ public class Player : MonoBehaviour
         float yaw = transform.localPosition.x * positionYawFactor;
         float roll = xThrow * controlRollFactor;
         transform.localRotation = Quaternion.Euler(pitch, yaw, roll);
+    }
+    
+    void StartDeathSequence()
+    {
+        isControlEnabled = false;
     }
 }
